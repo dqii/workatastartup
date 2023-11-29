@@ -49,6 +49,7 @@ const JobSearch = ({ getHtml, searchJobs, getQuery }: JobSearchProps) => {
         <div>
           <p className="mb-3 text-lg">SQL Query</p>
           <CodeBlock lang="sql" code={query} getHtml={getHtml} />
+          <p className="mt-2 text-xs">Note: Replace ? with the query string</p>
         </div>
 
         <div>
