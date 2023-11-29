@@ -1,4 +1,4 @@
-const job = {
+export const job = {
   id: "63548-0",
   title: "GIS Technician",
   date: "2022-09-05T15:48:50.000Z",
@@ -18,8 +18,8 @@ const job = {
   salaryHighCurrency: "USD",
 };
 
-function formatLocation() {
-  const { city, state, country, workplace } = job;
+export function formatLocation() {
+  const { city, state, country } = job;
   let location = "";
 
   if (city) {
@@ -33,16 +33,23 @@ function formatLocation() {
     location += country;
   }
 
+  return location;
+}
+
+export function formatLocationWithWorkplace() {
+  const { workplace } = job;
+
+  let location = formatLocation();
   if (workplace) {
     if (location) location += ` (${workplace})`;
     else location = workplace;
   }
 
-  return location || "None";
+  return location;
 }
 
 const JobPreview = () => {
-  const location = formatLocation();
+  const location = formatLocationWithWorkplace();
   return (
     <div className="w-full border-b border-stone-200 p-4">
       <p className="text-lg font-medium">{job.title}</p>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import CodeBlock from "./CodeBlock";
 import JobPreview from "./JobPreview";
+import JobView from "./JobView";
 
 const QUERY = `SELECT
   *
@@ -47,7 +48,9 @@ const JobSearch = ({ getHtml, searchJob }: JobSearchProps) => {
         </div>
       </div>
 
-      <div></div>
+      <div>
+        <JobView />
+      </div>
     </div>
   );
 };
