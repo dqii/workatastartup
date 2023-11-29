@@ -7,30 +7,28 @@ import JobView from "./JobView";
 import { Job } from "@prisma/client";
 import { useDebounce } from "@uidotdev/usehooks";
 
-const getQuery = () => `SELECT *
-FROM
-  jobs
-ORDER BY
-  text_embedding('BAAI/bge-large-en', :text)
-    <-> description_embedding
-LIMIT 3`;
-
 interface JobSearchProps {
   getHtml: (lang: string, code: string) => Promise<string>;
   searchJobs: (query: string) => Promise<Job[]>;
+  getQuery: (query: string) => Promise<string>;
 }
 
-const JobSearch = ({ getHtml, searchJobs }: JobSearchProps) => {
+const JobSearch = ({ getHtml, searchJobs, getQuery }: JobSearchProps) => {
   const [input, setInput] = useState(
     "I have been a software engineer for 5 years. I like React Native and have experience with Expo. I enjoy front end work in general, and I want to work at a later stage company."
   );
+  const [job, setJob] = useState<Job | undefined>();
   const [jobs, setJobs] = useState<Job[]>([]);
-  const query = getQuery();
+  const [query, setQuery] = useState("");
 
   const debouncedInput = useDebounce(input, 1000);
   useEffect(() => {
     if (debouncedInput.length > 10) {
-      searchJobs(debouncedInput).then(setJobs);
+      getQuery("?").then(setQuery);
+      searchJobs(debouncedInput).then((jobs) => {
+        setJobs(jobs);
+        setJob(jobs[0]);
+      });
     } else {
       setJobs([]);
     }
@@ -55,15 +53,13 @@ const JobSearch = ({ getHtml, searchJobs }: JobSearchProps) => {
 
         <div>
           <p className="mb-3 text-lg">Results</p>
-          <JobPreview />
-          <JobPreview />
-          <JobPreview />
+          {jobs.map((job) => (
+            <JobPreview key={job.id} job={job} />
+          ))}
         </div>
       </div>
 
-      <div>
-        <JobView />
-      </div>
+      <div>{job && <JobView job={job} />}</div>
     </div>
   );
 };

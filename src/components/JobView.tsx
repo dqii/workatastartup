@@ -1,10 +1,11 @@
 import DOMPurify from "isomorphic-dompurify";
-import { formatLocationWithWorkplace, job } from "./JobPreview";
+import { formatLocationWithWorkplace } from "./JobPreview";
 import Link from "next/link";
 import _ from "lodash";
 import getSymbolFromCurrency from "currency-symbol-map";
+import { Job } from "@prisma/client";
 
-function formatDate() {
+function formatDate(job: Job) {
   const { date } = job;
   if (!date) return;
   const dateObj = new Date(date);
@@ -15,18 +16,18 @@ function formatDate() {
   });
 }
 
-function formatSalaryRange() {
+function formatSalaryRange(job: Job) {
   const { salaryLow, salaryHigh, salaryLowCurrency, salaryHighCurrency } = job;
   let formattedSalary = "";
 
-  if (salaryLow !== undefined && salaryHigh !== undefined) {
+  if (salaryLow && salaryHigh) {
     const salaryLowStr = formatSalary(salaryLow, salaryLowCurrency);
     const salaryHighStr = formatSalary(salaryHigh, salaryHighCurrency);
     formattedSalary = `${salaryLowStr} - ${salaryHighStr}`;
-  } else if (salaryLow !== undefined) {
+  } else if (salaryLow) {
     const salaryLowStr = formatSalary(salaryLow, salaryLowCurrency);
     formattedSalary = `${salaryLowStr} and above`;
-  } else if (salaryHigh !== undefined) {
+  } else if (salaryHigh) {
     const salaryHighStr = formatSalary(salaryHigh, salaryHighCurrency);
     formattedSalary = `${salaryHighStr} and below`;
   }
@@ -34,38 +35,47 @@ function formatSalaryRange() {
   return formattedSalary;
 }
 
-function formatSalary(amount: number, currency: string) {
+function formatSalary(amount: number, currency: string | null) {
   const currencySymbol = getSymbolFromCurrency(currency || "USD");
   return `${currencySymbol}${amount.toLocaleString()}`;
 }
 
-const JobView = () => {
-  const location = formatLocationWithWorkplace();
-  const dateString = formatDate();
-  const salaryRange = formatSalaryRange();
+interface JobViewProps {
+  job: Job;
+}
+
+const JobView = ({ job }: JobViewProps) => {
+  const location = formatLocationWithWorkplace(job);
+  const dateString = formatDate(job);
+  const salaryRange = formatSalaryRange(job);
   return (
     <div>
       <div className="flex justify-between mb-8">
         <div>
           <h2 className="text-2xl mb-2">{job.title}</h2>
           <p>
-            {job.companyName} · {location} · {_.capitalize(job.type)}
+            {job.companyName} · {location}
+            {job.type ? " · " + _.capitalize(job.type) : ""}
           </p>
           {salaryRange && <p className="mt-1">Compensation: {salaryRange}</p>}
         </div>
-        <Link href={job.url}>
-          <button className="bg-stone-700 rounded-full px-4 py-2 tracking-wide text-sm text-white">
-            Apply
-          </button>
-        </Link>
+        {job.url && (
+          <Link href={job.url}>
+            <button className="bg-stone-700 rounded-full px-4 py-2 tracking-wide text-sm text-white">
+              Apply
+            </button>
+          </Link>
+        )}
       </div>
 
-      <p className="text-lg mb-5">About the job</p>
-      <div
-        dangerouslySetInnerHTML={{
-          __html: DOMPurify.sanitize(job.description),
-        }}
-      />
+      {job.description && <p className="text-lg mb-5">About the job</p>}
+      {job.description && (
+        <div
+          dangerouslySetInnerHTML={{
+            __html: DOMPurify.sanitize(job.description),
+          }}
+        />
+      )}
 
       {dateString && (
         <p className="mt-8 text-stone-400">Posted on {dateString}.</p>

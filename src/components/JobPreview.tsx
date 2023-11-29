@@ -1,24 +1,6 @@
-export const job = {
-  id: "63548-0",
-  title: "GIS Technician",
-  date: "2022-09-05T15:48:50.000Z",
-  url: "https://www.ycombinator.com/companies/bunting-labs/jobs/tMHPptj-gis-technician?utm_source=syn_li",
-  companyId: 82344341,
-  companyName: "Bunting Labs",
-  city: null,
-  state: null,
-  country: "US",
-  description:
-    "<p>We are looking for a GIS technician to create new geospatial data and do QA/QC on existing geospatial data in QGIS in support of our customers and internal software development. </p>\n\n<p>This job requires experience in QGIS.</p>\n",
-  type: "CONTRACT",
-  workplace: "Remote",
-  salaryLow: 1000,
-  salaryHigh: 10000,
-  salaryLowCurrency: "USD",
-  salaryHighCurrency: "USD",
-};
+import { Job } from "@prisma/client";
 
-export function formatLocation() {
+export function formatLocation(job: Job) {
   const { city, state, country } = job;
   let location = "";
 
@@ -36,10 +18,10 @@ export function formatLocation() {
   return location;
 }
 
-export function formatLocationWithWorkplace() {
+export function formatLocationWithWorkplace(job: Job) {
   const { workplace } = job;
 
-  let location = formatLocation();
+  let location = formatLocation(job);
   if (workplace) {
     if (location) location += ` (${workplace})`;
     else location = workplace;
@@ -48,8 +30,12 @@ export function formatLocationWithWorkplace() {
   return location;
 }
 
-const JobPreview = () => {
-  const location = formatLocationWithWorkplace();
+interface JobPreviewProps {
+  job: Job;
+}
+
+const JobPreview = ({ job }: JobPreviewProps) => {
+  const location = formatLocationWithWorkplace(job);
   return (
     <div className="w-full border-b border-stone-200 p-3 hover:bg-stone-50">
       <p className="font-medium">{job.title}</p>
