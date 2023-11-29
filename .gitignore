@@ -1,3 +1,4 @@
 *.xml
 .next/
 node_modules/
+.env
