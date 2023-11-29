@@ -12,7 +12,8 @@ FROM
 WHERE
   type = 'REMOTE'
 ORDER BY
-  embed($text) <-> description_embedding`;
+  embed($text) <-> description_embedding
+LIMIT 3`;
 
 interface JobSearchProps {
   getHtml: (lang: string, code: string) => Promise<string>;

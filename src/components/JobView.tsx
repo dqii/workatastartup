@@ -40,9 +40,9 @@ function formatSalaryRange() {
   return formattedSalary;
 }
 
-function formatSalary(amount, currency) {
+function formatSalary(amount: number, currency: string) {
   // Use currency symbol if available, otherwise use the currency code
-  const currencySymbol = getSymbolFromCurrency(currency) || currency;
+  const currencySymbol = getSymbolFromCurrency(currency || "USD");
 
   // Format salary amount with currency symbol
   return `${currencySymbol}${amount.toLocaleString()}`;
