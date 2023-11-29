@@ -15,8 +15,8 @@ const CodeBlock = ({ lang, code, getHtml }: CodeBlockProps) => {
     getHtml(lang, code).then((html) => setHtml(DOMPurify.sanitize(html)));
   }, [code, lang]);
   return (
-    <div className="mb-5">
-      <div className="flex items-center px-4 py-2 text-sm border border-b-0 rounded-t bg-neutral-200">
+    <div className="text-xs">
+      <div className="flex items-center px-4 py-2 border border-b-0 rounded-t bg-neutral-200">
         <p className="mr-auto">{lang}</p>
         <div
           className="flex items-center gap-2 cursor-pointer"
@@ -27,7 +27,7 @@ const CodeBlock = ({ lang, code, getHtml }: CodeBlockProps) => {
         </div>
       </div>
       <div
-        className="p-4 overflow-x-auto text-sm bg-white border border-t-0 rounded-b"
+        className="p-4 overflow-x-auto bg-white border border-t-0 rounded-b"
         dangerouslySetInnerHTML={{
           __html: html,
         }}
