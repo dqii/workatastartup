@@ -51,8 +51,8 @@ export function formatLocationWithWorkplace() {
 const JobPreview = () => {
   const location = formatLocationWithWorkplace();
   return (
-    <div className="w-full border-b border-stone-200 p-4">
-      <p className="text-lg font-medium">{job.title}</p>
+    <div className="w-full border-b border-stone-200 p-3 hover:bg-stone-50">
+      <p className="font-medium">{job.title}</p>
       <p className="text-sm text-stone-500">{job.companyName}</p>
       {location && <p className="text-sm text-stone-500">{location}</p>}
     </div>

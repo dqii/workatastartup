@@ -1,44 +1,56 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CodeBlock from "./CodeBlock";
 import JobPreview from "./JobPreview";
 import JobView from "./JobView";
+import { Job } from "@prisma/client";
+import { useDebounce } from "@uidotdev/usehooks";
 
-const QUERY = `SELECT
-  *
+const getQuery = () => `SELECT *
 FROM
   jobs
-WHERE
-  type = 'REMOTE'
 ORDER BY
-  embed($text) <-> description_embedding
+  text_embedding('BAAI/bge-large-en', :text)
+    <-> description_embedding
 LIMIT 3`;
 
 interface JobSearchProps {
   getHtml: (lang: string, code: string) => Promise<string>;
-  searchJob: (query: string) => Promise<void>;
+  searchJobs: (query: string) => Promise<Job[]>;
 }
 
-const JobSearch = ({ getHtml, searchJob }: JobSearchProps) => {
-  const [query, setQuery] = useState(
+const JobSearch = ({ getHtml, searchJobs }: JobSearchProps) => {
+  const [input, setInput] = useState(
     "I have been a software engineer for 5 years. I like React Native and have experience with Expo. I enjoy front end work in general, and I want to work at a later stage company."
   );
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const query = getQuery();
+
+  const debouncedInput = useDebounce(input, 1000);
+  useEffect(() => {
+    if (debouncedInput.length > 10) {
+      searchJobs(debouncedInput).then(setJobs);
+    } else {
+      setJobs([]);
+    }
+  }, [debouncedInput]);
+
   return (
-    <div className="flex gap-x-8">
+    <div className="flex gap-x-12">
       <div className="w-96 flex flex-col gap-y-8">
         <div>
           <p className="mb-3 text-lg">Tell us about your experience</p>
           <textarea
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
             className="border border-stone-400 rounded text-stone-700 w-full h-28 p-2 text-sm"
           />
         </div>
 
         <div>
           <p className="mb-3 text-lg">SQL Query</p>
-          <CodeBlock lang="sql" code={QUERY} getHtml={getHtml} />
+          <CodeBlock lang="sql" code={query} getHtml={getHtml} />
         </div>
 
         <div>

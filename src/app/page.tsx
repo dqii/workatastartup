@@ -1,9 +1,10 @@
 import JobSearch from "@/components/JobSearch";
+import { Job } from "@prisma/client";
 import { getHighlighter } from "shiki";
 
-async function searchJob(query: string) {
+async function searchJobs(query: string): Promise<Job[]> {
   "use server";
-  return;
+  return [];
 }
 
 async function getHtml(lang: string, code: string) {
@@ -31,7 +32,7 @@ export default function Home() {
   return (
     <main className="py-8 container">
       <h1 className="text-2xl mb-5">Search for a Startup Job</h1>
-      <JobSearch searchJob={searchJob} getHtml={getHtml} />
+      <JobSearch searchJobs={searchJobs} getHtml={getHtml} />
     </main>
   );
 }
