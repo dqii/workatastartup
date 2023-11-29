@@ -19,32 +19,23 @@ function formatSalaryRange() {
   const { salaryLow, salaryHigh, salaryLowCurrency, salaryHighCurrency } = job;
   let formattedSalary = "";
 
-  // Check if salaryLow and salaryHigh are provided
   if (salaryLow !== undefined && salaryHigh !== undefined) {
-    // Format salary range
-    formattedSalary = `${formatSalary(
-      salaryLow,
-      salaryLowCurrency
-    )} - ${formatSalary(salaryHigh, salaryHighCurrency)}`;
+    const salaryLowStr = formatSalary(salaryLow, salaryLowCurrency);
+    const salaryHighStr = formatSalary(salaryHigh, salaryHighCurrency);
+    formattedSalary = `${salaryLowStr} - ${salaryHighStr}`;
   } else if (salaryLow !== undefined) {
-    // Format only salaryLow
-    formattedSalary = `${formatSalary(salaryLow, salaryLowCurrency)} and above`;
+    const salaryLowStr = formatSalary(salaryLow, salaryLowCurrency);
+    formattedSalary = `${salaryLowStr} and above`;
   } else if (salaryHigh !== undefined) {
-    // Format only salaryHigh
-    formattedSalary = `${formatSalary(
-      salaryHigh,
-      salaryHighCurrency
-    )} and below`;
+    const salaryHighStr = formatSalary(salaryHigh, salaryHighCurrency);
+    formattedSalary = `${salaryHighStr} and below`;
   }
 
   return formattedSalary;
 }
 
 function formatSalary(amount: number, currency: string) {
-  // Use currency symbol if available, otherwise use the currency code
   const currencySymbol = getSymbolFromCurrency(currency || "USD");
-
-  // Format salary amount with currency symbol
   return `${currencySymbol}${amount.toLocaleString()}`;
 }
 
