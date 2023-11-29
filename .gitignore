@@ -1,0 +1,3 @@
+*.xml
+.next/
+node_modules/
