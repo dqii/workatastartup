@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "eamodio.gitlens",
+    "csstools.postcss",
+    "esbenp.prettier-vscode",
+    "blanu.vscode-styled-jsx",
+    "heybourn.headwind"
+  ]
+}
