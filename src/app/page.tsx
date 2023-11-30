@@ -4,14 +4,14 @@ import { getQuery } from "@/utils/database";
 import { Job } from "@prisma/client";
 import { getHighlighter } from "shiki";
 
-async function searchJobs(query: string): Promise<Job[]> {
+async function searchJobs(query: string, country: string): Promise<Job[]> {
   "use server";
-  return await prismaClient.$queryRaw(getQuery(query));
+  return await prismaClient.$queryRaw(getQuery(query, country));
 }
 
-async function getSqlString(query: string) {
+async function getSqlString(query: string, country: string) {
   "use server";
-  return getQuery(query).sql;
+  return getQuery(query, country).sql;
 }
 
 async function getHtml(lang: string, code: string) {
