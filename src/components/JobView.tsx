@@ -3,9 +3,10 @@ import { formatLocationWithWorkplace } from "./JobPreview";
 import Link from "next/link";
 import _ from "lodash";
 import getSymbolFromCurrency from "currency-symbol-map";
-import { Job } from "@prisma/client";
+import { ExtendedJob } from "@/utils/database";
+import { HiArrowRight } from "react-icons/hi";
 
-function formatDate(job: Job) {
+function formatDate(job: ExtendedJob) {
   const { date } = job;
   if (!date) return;
   const dateObj = new Date(date);
@@ -16,7 +17,7 @@ function formatDate(job: Job) {
   });
 }
 
-function formatSalaryRange(job: Job) {
+function formatSalaryRange(job: ExtendedJob) {
   const { salaryLow, salaryHigh, salaryLowCurrency, salaryHighCurrency } = job;
   let formattedSalary = "";
 
@@ -41,28 +42,36 @@ function formatSalary(amount: number, currency: string | null) {
 }
 
 interface JobViewProps {
-  job: Job;
+  job: ExtendedJob;
 }
 
 const JobView = ({ job }: JobViewProps) => {
   const location = formatLocationWithWorkplace(job);
   const dateString = formatDate(job);
   const salaryRange = formatSalaryRange(job);
+  const information: string[] = [];
+  if (job.companyName) {
+    information.push(job.companyName);
+  }
+  if (location) {
+    information.push(location);
+  }
+  if (job.type) {
+    information.push(_.capitalize(job.type.replace("_", " ")));
+  }
   return (
     <div>
       <div className="flex justify-between mb-8">
         <div>
           <h2 className="text-2xl mb-2">{job.title}</h2>
-          <p>
-            {job.companyName} · {location}
-            {job.type ? " · " + _.capitalize(job.type) : ""}
-          </p>
+          <p>{information.join(" · ")}</p>
           {salaryRange && <p className="mt-1">Compensation: {salaryRange}</p>}
         </div>
         {job.url && (
-          <Link href={job.url}>
-            <button className="bg-stone-700 rounded-full px-4 py-2 tracking-wide text-sm text-white">
-              Apply
+          <Link href={job.url} target="_blank">
+            <button className="bg-stone-700 rounded-full px-4 py-2 tracking-wide text-sm text-white hover:bg-stone-800 flex">
+              Apply on Y Combinator
+              <HiArrowRight className="ml-2 mt-0.5" />
             </button>
           </Link>
         )}
@@ -71,6 +80,7 @@ const JobView = ({ job }: JobViewProps) => {
       {job.description && <p className="text-lg mb-5">About the job</p>}
       {job.description && (
         <div
+          className="text-sm"
           dangerouslySetInnerHTML={{
             __html: DOMPurify.sanitize(job.description),
           }}

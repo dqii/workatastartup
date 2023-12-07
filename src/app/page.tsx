@@ -1,12 +1,18 @@
 import prismaClient from "@/clients/prisma";
 import JobSearch from "@/components/JobSearch";
-import { getQuery } from "@/utils/database";
-import { Job } from "@prisma/client";
+import { getQuery, ExtendedJob } from "@/utils/database";
 import { getHighlighter } from "shiki";
+import _ from "lodash";
 
-async function searchJobs(query: string, country: string): Promise<Job[]> {
+async function searchJobs(
+  query: string,
+  country: string
+): Promise<ExtendedJob[]> {
   "use server";
-  return await prismaClient.$queryRaw(getQuery(query, country));
+  const jobs = await prismaClient.$queryRaw(getQuery(query, country));
+  return (jobs as any[]).map((job) =>
+    _.mapKeys(job, (v, k) => _.camelCase(k))
+  ) as ExtendedJob[];
 }
 
 async function getSqlString(query: string, country: string) {
@@ -38,7 +44,7 @@ async function getHtml(lang: string, code: string) {
 export default function Home() {
   return (
     <main className="py-8 container">
-      <h1 className="text-2xl mb-5">Search for a Startup Job</h1>
+      <h1 className="text-3xl mb-8 font-bold">Find a Startup Job 🔍</h1>
       <JobSearch
         searchJobs={searchJobs}
         getHtml={getHtml}

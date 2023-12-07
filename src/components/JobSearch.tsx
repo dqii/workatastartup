@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import CodeBlock from "./CodeBlock";
 import JobPreview from "./JobPreview";
 import JobView from "./JobView";
-import { Job } from "@prisma/client";
 import { useDebounce } from "@uidotdev/usehooks";
 import classNames from "classnames";
+import { ExtendedJob } from "@/utils/database";
 
 interface CountryButtonProps {
   children: string;
@@ -14,7 +14,7 @@ interface CountryButtonProps {
 
 interface JobSearchProps {
   getHtml: (lang: string, code: string) => Promise<string>;
-  searchJobs: (query: string, country: string) => Promise<Job[]>;
+  searchJobs: (query: string, country: string) => Promise<ExtendedJob[]>;
   getQuery: (query: string, country: string) => Promise<string>;
 }
 
@@ -24,8 +24,8 @@ const JobSearch = ({ getHtml, searchJobs, getQuery }: JobSearchProps) => {
   );
   const [country, setCountry] = useState("");
 
-  const [job, setJob] = useState<Job | undefined>();
-  const [jobs, setJobs] = useState<Job[]>([]);
+  const [job, setJob] = useState<ExtendedJob | undefined>();
+  const [jobs, setJobs] = useState<ExtendedJob[]>([]);
 
   const [query, setQuery] = useState("");
 
@@ -35,7 +35,6 @@ const JobSearch = ({ getHtml, searchJobs, getQuery }: JobSearchProps) => {
 
   const debouncedInput = useDebounce(input, 1000);
   useEffect(() => {
-    getQuery(debouncedInput, country).then(setQuery);
     searchJobs(debouncedInput, country).then((jobs) => {
       setJobs(jobs);
       setJob(jobs[0]);
@@ -79,20 +78,31 @@ const JobSearch = ({ getHtml, searchJobs, getQuery }: JobSearchProps) => {
         </div>
 
         <div>
-          <p className="mb-3 text-lg">SQL Query</p>
+          <p className="mb-3 text-lg">Generated SQL Query</p>
           <CodeBlock lang="sql" code={query} getHtml={getHtml} />
-          <p className="mt-2 text-xs">Note: Replace ? with the query string</p>
-        </div>
-
-        <div>
-          <p className="mb-3 text-lg">Results</p>
-          {jobs.map((job) => (
-            <JobPreview key={job.id} job={job} />
-          ))}
+          <p className="mt-2 text-xs">Note: Replace ? with the inputs</p>
         </div>
       </div>
 
-      <div>{job && <JobView job={job} />}</div>
+      <div className="w-full">
+        <div>
+          <p className="mb-3 text-lg">Results</p>
+          <div className="grid grid-cols-3 gap-x-8">
+            {jobs.map((job_, idx) => (
+              <JobPreview
+                key={job_.id}
+                idx={idx + 1}
+                job={job_}
+                activeJob={job}
+                setActiveJob={setJob}
+              />
+            ))}
+          </div>
+        </div>
+        <div className="mt-10 border-t pt-10">
+          {job && <JobView job={job} />}
+        </div>
+      </div>
     </div>
   );
 };

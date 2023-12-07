@@ -1,6 +1,7 @@
-import { Job } from "@prisma/client";
+import { ExtendedJob } from "@/utils/database";
+import classNames from "classnames";
 
-export function formatLocation(job: Job) {
+export function formatLocation(job: ExtendedJob) {
   const { city, state, country } = job;
   let location = "";
 
@@ -18,7 +19,7 @@ export function formatLocation(job: Job) {
   return location;
 }
 
-export function formatLocationWithWorkplace(job: Job) {
+export function formatLocationWithWorkplace(job: ExtendedJob) {
   const { workplace } = job;
 
   let location = formatLocation(job);
@@ -31,16 +32,34 @@ export function formatLocationWithWorkplace(job: Job) {
 }
 
 interface JobPreviewProps {
-  job: Job;
+  idx: number;
+  job: ExtendedJob;
+  activeJob: ExtendedJob | undefined;
+  setActiveJob: (job: ExtendedJob) => void;
 }
 
-const JobPreview = ({ job }: JobPreviewProps) => {
+const JobPreview = ({ idx, job, activeJob, setActiveJob }: JobPreviewProps) => {
   const location = formatLocationWithWorkplace(job);
+  const isActive = activeJob?.id === job.id;
   return (
-    <div className="w-full border-b border-stone-200 p-3 hover:bg-stone-50">
-      <p className="font-medium">{job.title}</p>
-      <p className="text-sm text-stone-500">{job.companyName}</p>
-      {location && <p className="text-sm text-stone-500">{location}</p>}
+    <div className="group">
+      <div
+        onClick={() => setActiveJob(job)}
+        className={classNames(
+          "w-full h-full p-4 group-hover:bg-stone-200 rounded cursor-pointer",
+          isActive ? "bg-stone-200" : "bg-stone-100"
+        )}
+      >
+        <div className="flex items-center justify-between">
+          <p className="font-semibold">{idx}.</p>
+          <p className="bg-sky-100 group-hover:bg-sky-200 px-2 py-0.5 text-sm text-semibold tracking-wide">
+            cosine distance: {job.score.toFixed(5)}
+          </p>
+        </div>
+        <p className="mt-2 font-medium">{job.title}</p>
+        <p className="mt-2 text-sm text-stone-500">{job.companyName}</p>
+        {location && <p className="text-sm text-stone-500 mt-1">{location}</p>}
+      </div>
     </div>
   );
 };
