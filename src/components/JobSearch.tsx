@@ -58,7 +58,7 @@ const JobSearch = ({ getHtml, searchJobs, getQuery }: JobSearchProps) => {
 
   return (
     <div className="flex">
-      <div className="w-[400px] px-5 flex flex-col gap-y-8 bg-slate-50 min-h-screen">
+      <div className="w-[400px] px-5 flex flex-col gap-y-8 bg-slate-50 border-r-4 border-slate-100 min-h-screen">
         <div>
           <div className="h-20 pt-4">
             <h1 className="text-3xl font-bold">Find a Startup Job 🔍</h1>
@@ -104,7 +104,7 @@ const JobSearch = ({ getHtml, searchJobs, getQuery }: JobSearchProps) => {
             ))}
           </div>
         </div>
-        <div className="mt-10 border-t pt-10">
+        <div className="mt-10 border-t-2 border-slate-100 pt-10">
           {job && <JobView job={job} />}
         </div>
       </div>
