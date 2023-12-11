@@ -43,13 +43,10 @@ async function getHtml(lang: string, code: string) {
 
 export default function Home() {
   return (
-    <main className="py-8 container">
-      <h1 className="text-3xl mb-8 font-bold">Find a Startup Job 🔍</h1>
-      <JobSearch
-        searchJobs={searchJobs}
-        getHtml={getHtml}
-        getQuery={getSqlString}
-      />
-    </main>
+    <JobSearch
+      searchJobs={searchJobs}
+      getHtml={getHtml}
+      getQuery={getSqlString}
+    />
   );
 }

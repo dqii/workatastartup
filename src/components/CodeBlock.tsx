@@ -16,7 +16,7 @@ const CodeBlock = ({ lang, code, getHtml }: CodeBlockProps) => {
   }, [code, lang]);
   return (
     <div className="text-xs">
-      <div className="flex items-center px-4 py-2 border border-b-0 rounded-t bg-neutral-200">
+      <div className="flex items-center px-4 py-2 border border-b-0 rounded-t bg-slate-200">
         <p className="mr-auto">{lang}</p>
         <div
           className="flex items-center gap-2 cursor-pointer"

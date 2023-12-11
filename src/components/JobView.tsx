@@ -69,7 +69,7 @@ const JobView = ({ job }: JobViewProps) => {
         </div>
         {job.url && (
           <Link href={job.url} target="_blank">
-            <button className="bg-stone-700 rounded-full px-4 py-2 tracking-wide text-sm text-white hover:bg-stone-800 flex">
+            <button className="bg-slate-700 rounded-full px-4 py-2 tracking-wide text-sm text-white hover:bg-slate-800 flex">
               Apply on Y Combinator
               <HiArrowRight className="ml-2 mt-0.5" />
             </button>
@@ -88,7 +88,7 @@ const JobView = ({ job }: JobViewProps) => {
       )}
 
       {dateString && (
-        <p className="mt-8 text-stone-400">Posted on {dateString}.</p>
+        <p className="mt-8 text-slate-400">Posted on {dateString}.</p>
       )}
     </div>
   );

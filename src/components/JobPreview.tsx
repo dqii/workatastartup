@@ -46,19 +46,24 @@ const JobPreview = ({ idx, job, activeJob, setActiveJob }: JobPreviewProps) => {
       <div
         onClick={() => setActiveJob(job)}
         className={classNames(
-          "w-full h-full p-4 group-hover:bg-stone-200 rounded cursor-pointer",
-          isActive ? "bg-stone-200" : "bg-stone-100"
+          "w-full h-full p-4 rounded cursor-pointer border border-slate-300",
+          isActive ? "bg-slate-200" : "bg-slate-50 group-hover:bg-slate-100"
         )}
       >
         <div className="flex items-center justify-between">
           <p className="font-semibold">{idx}.</p>
-          <p className="bg-sky-100 group-hover:bg-sky-200 px-2 py-0.5 text-sm text-semibold tracking-wide">
+          <p
+            className={classNames(
+              "bg-white px-2 py-0.5 text-xs text-semibold tracking-wide rounded border-slate-200 border",
+              { "group-hover:bg-slate-50": !isActive }
+            )}
+          >
             cosine distance: {job.score.toFixed(5)}
           </p>
         </div>
         <p className="mt-2 font-medium">{job.title}</p>
-        <p className="mt-2 text-sm text-stone-500">{job.companyName}</p>
-        {location && <p className="text-sm text-stone-500 mt-1">{location}</p>}
+        <p className="mt-2 text-sm text-slate-500">{job.companyName}</p>
+        {location && <p className="text-sm text-slate-500 mt-1">{location}</p>}
       </div>
     </div>
   );

@@ -36,6 +36,7 @@ const JobSearch = ({ getHtml, searchJobs, getQuery }: JobSearchProps) => {
   const debouncedInput = useDebounce(input, 1000);
   useEffect(() => {
     searchJobs(debouncedInput, country).then((jobs) => {
+      getQuery(debouncedInput, country).then(setQuery);
       setJobs(jobs);
       setJob(jobs[0]);
     });
@@ -46,8 +47,8 @@ const JobSearch = ({ getHtml, searchJobs, getQuery }: JobSearchProps) => {
       className={classNames(
         "py-1 px-4 rounded-full text-sm",
         country === children
-          ? "bg-stone-400 text-white"
-          : "border border-stone-200 hover:bg-stone-50"
+          ? "bg-slate-400 text-white"
+          : "border border-slate-200 bg-white hover:bg-slate-100"
       )}
       onClick={() => setCountry(country === children ? "" : children)}
     >
@@ -56,14 +57,18 @@ const JobSearch = ({ getHtml, searchJobs, getQuery }: JobSearchProps) => {
   );
 
   return (
-    <div className="flex gap-x-12">
-      <div className="w-96 flex flex-col gap-y-8">
+    <div className="flex">
+      <div className="w-[400px] px-5 flex flex-col gap-y-8 bg-slate-50 min-h-screen">
         <div>
+          <div className="h-20 pt-4">
+            <h1 className="text-3xl font-bold">Find a Startup Job 🔍</h1>
+          </div>
+
           <p className="mb-3 text-lg">Tell us about your experience</p>
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            className="border border-stone-200 rounded text-stone-700 w-full h-28 p-2 text-sm"
+            className="border border-slate-200 rounded text-slate-700 w-full h-28 p-2 text-sm"
           />
         </div>
 
@@ -84,7 +89,7 @@ const JobSearch = ({ getHtml, searchJobs, getQuery }: JobSearchProps) => {
         </div>
       </div>
 
-      <div className="w-full">
+      <div className="w-full mt-20 px-12">
         <div>
           <p className="mb-3 text-lg">Results</p>
           <div className="grid grid-cols-3 gap-x-8">
