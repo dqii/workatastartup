@@ -21,7 +21,7 @@
     "react-dom": "^18",
     "react-icons": "^4.12.0",
     "shiki": "^0.14.5",
-    "shikiji": "^0.7.5",
+    "shikiji": "0.6.10",
     "sql-template-strings": "^2.2.2"
   },
   "devDependencies": {

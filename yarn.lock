@@ -2607,10 +2607,10 @@ shiki@^0.14.5:
     vscode-oniguruma "^1.7.0"
     vscode-textmate "^8.0.0"
 
-shikiji@^0.7.5:
-  version "0.7.5"
-  resolved "https://registry.yarnpkg.com/shikiji/-/shikiji-0.7.5.tgz#43a634853f0e32c1b9939a9d4f587c570f009561"
-  integrity sha512-He8lAcTZUVuUW+Z4VRPM+TP+HVZCe4R1qzrP7voUrmAKrFKE260YEUVgqcP7y/0ps0uVvKgVhu5vgIshGpGocQ==
+shikiji@0.6.10:
+  version "0.6.10"
+  resolved "https://registry.yarnpkg.com/shikiji/-/shikiji-0.6.10.tgz#0dc34a5bebbafd9425a69e9b429ee39b4726dff1"
+  integrity sha512-WE+A5Y2ntM5hL3iJQujk97qr5Uj7PSIRXpQfrZ6h+JWPXZ8KBEDhFXc4lqNriaRq1WGOVPUT83XMOzmHiH3W8A==
   dependencies:
     hast-util-to-html "^9.0.0"
 
