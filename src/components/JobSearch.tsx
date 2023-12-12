@@ -61,7 +61,7 @@ const JobSearch = ({ getHtml, searchJobs, getQuery }: JobSearchProps) => {
     <div className='flex'>
       <div className='w-[400px] px-5 flex flex-col gap-y-8 bg-slate-50 border-r-4 border-slate-100 min-h-screen'>
         <div>
-          <div className='h-20 pt-4'>
+          <div className='h-20 pt-8'>
             <h1 className='text-3xl font-bold'>Find a Startup Job</h1>
           </div>
 
@@ -92,7 +92,7 @@ const JobSearch = ({ getHtml, searchJobs, getQuery }: JobSearchProps) => {
 
       <div className='w-full px-12'>
         <div>
-          <div className='h-20 pt-4'>
+          <div className='h-20 pt-8'>
             <h1 className='text-3xl'>
               💥 Vector generation and search powered by{' '}
               <Link href='https://lantern.dev' className='text-slate-400'>
