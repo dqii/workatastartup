@@ -1,7 +1,7 @@
 import prismaClient from '@/clients/prisma';
 import JobSearch from '@/components/JobSearch';
 import { getQuery, ExtendedJob } from '@/utils/database';
-import { getHighlighter } from 'shiki';
+import { getHighlighter } from 'shikiji';
 import _ from 'lodash';
 
 async function searchJobs(
