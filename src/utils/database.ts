@@ -1,4 +1,4 @@
-import { Job, Prisma } from "@prisma/client";
+import { Job, Prisma } from '@prisma/client';
 
 export interface ExtendedJob extends Job {
   score: number;
@@ -18,7 +18,7 @@ WHERE
   country = ${country}
 ORDER BY
   text_embedding('BAAI/bge-small-en', ${query})
-    <-> description_embedding_v2
+    <=> description_embedding_v2
 LIMIT 3`
     : query
     ? Prisma.sql`SELECT
@@ -31,7 +31,7 @@ FROM
   jobs
 ORDER BY
   text_embedding('BAAI/bge-small-en', ${query})
-    <-> description_embedding_v2
+    <=> description_embedding_v2
 LIMIT 3`
     : Prisma.sql`SELECT *
 FROM
