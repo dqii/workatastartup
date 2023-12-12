@@ -5,19 +5,19 @@ import { FaClipboard } from 'react-icons/fa';
 
 interface CodeBlockProps {
   code: string;
-  lang: 'sql';
-  getHtml: (lang: string, code: string) => Promise<string>;
+  getHtml: (code: string) => Promise<string>;
+  defaultHtml: string;
 }
 
-const CodeBlock = ({ lang, code, getHtml }: CodeBlockProps) => {
-  const [html, setHtml] = useState('');
+const CodeBlock = ({ code, defaultHtml, getHtml }: CodeBlockProps) => {
+  const [html, setHtml] = useState(defaultHtml);
   useEffect(() => {
-    getHtml(lang, code).then((html) => setHtml(DOMPurify.sanitize(html)));
-  }, [code, lang]);
+    getHtml(code).then((html) => setHtml(DOMPurify.sanitize(html)));
+  }, [code]);
   return (
     <div className='text-xs'>
       <div className='flex items-center px-4 py-2 border border-b-0 rounded-t bg-slate-200'>
-        <p className='mr-auto'>{lang}</p>
+        <p className='mr-auto'>sql</p>
         <div
           className='flex items-center gap-2 cursor-pointer'
           onClick={() => navigator.clipboard.writeText(code)}

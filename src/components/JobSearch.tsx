@@ -15,16 +15,18 @@ interface CountryButtonProps {
 }
 
 interface JobSearchProps {
-  getHtml: (lang: string, code: string) => Promise<string>;
+  getHtml: (code: string) => Promise<string>;
   searchJobs: (query: string, country: string) => Promise<ExtendedJob[]>;
   getQuery: (query: string, country: string) => Promise<string>;
   defaultJobs: ExtendedJob[];
   defaultQuery: string;
+  defaultHtml: string;
 }
 
 const JobSearch = ({
   defaultJobs,
   defaultQuery,
+  defaultHtml,
   getHtml,
   searchJobs,
   getQuery,
@@ -92,7 +94,7 @@ const JobSearch = ({
 
         <div>
           <p className='mb-3 text-lg'>Generated SQL Query</p>
-          <CodeBlock lang='sql' code={query} getHtml={getHtml} />
+          <CodeBlock defaultHtml={defaultHtml} code={query} getHtml={getHtml} />
           <p className='mt-2 text-xs'>Note: Replace ? with the inputs</p>
         </div>
       </div>

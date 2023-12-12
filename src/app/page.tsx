@@ -21,7 +21,7 @@ async function getSqlString(query: string, country: string) {
   return getQuery(query, country).sql;
 }
 
-async function getHtml(lang: string, code: string) {
+async function getHtml(code: string) {
   'use server';
   const shiki = await getHighlighter({
     themes: ['github-light'],
@@ -36,7 +36,7 @@ async function getHtml(lang: string, code: string) {
     ],
   });
   const html = shiki.codeToHtml(code, {
-    lang,
+    lang: 'sql',
     theme: 'github-light',
   });
   return html;
@@ -45,10 +45,12 @@ async function getHtml(lang: string, code: string) {
 export default async function Home() {
   const jobs = await searchJobs(DEFAULT_INPUT, '');
   const query = await getSqlString(DEFAULT_INPUT, '');
+  const html = await getHtml(query);
   return (
     <JobSearch
       defaultJobs={jobs}
       defaultQuery={query}
+      defaultHtml={html}
       searchJobs={searchJobs}
       getHtml={getHtml}
       getQuery={getSqlString}
