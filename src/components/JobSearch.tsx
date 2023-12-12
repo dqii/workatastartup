@@ -8,6 +8,7 @@ import { useDebounce } from '@uidotdev/usehooks';
 import classNames from 'classnames';
 import { ExtendedJob } from '@/utils/database';
 import Link from 'next/link';
+import { DEFAULT_INPUT } from '@/utils/constants';
 
 interface CountryButtonProps {
   children: string;
@@ -17,18 +18,24 @@ interface JobSearchProps {
   getHtml: (lang: string, code: string) => Promise<string>;
   searchJobs: (query: string, country: string) => Promise<ExtendedJob[]>;
   getQuery: (query: string, country: string) => Promise<string>;
+  defaultJobs: ExtendedJob[];
+  defaultQuery: string;
 }
 
-const JobSearch = ({ getHtml, searchJobs, getQuery }: JobSearchProps) => {
-  const [input, setInput] = useState(
-    'I have been a software engineer for 5 years. I like React Native and have experience with Expo. I enjoy front end work in general, and I want to work at a later stage company.'
-  );
+const JobSearch = ({
+  defaultJobs,
+  defaultQuery,
+  getHtml,
+  searchJobs,
+  getQuery,
+}: JobSearchProps) => {
+  const [input, setInput] = useState(DEFAULT_INPUT);
   const [country, setCountry] = useState('');
 
   const [job, setJob] = useState<ExtendedJob | undefined>();
-  const [jobs, setJobs] = useState<ExtendedJob[]>([]);
+  const [jobs, setJobs] = useState<ExtendedJob[]>(defaultJobs);
 
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState(defaultQuery);
 
   useEffect(() => {
     getQuery(input, country).then(setQuery);
