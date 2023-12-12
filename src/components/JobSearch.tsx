@@ -32,7 +32,7 @@ const JobSearch = ({
   const [input, setInput] = useState(DEFAULT_INPUT);
   const [country, setCountry] = useState('');
 
-  const [job, setJob] = useState<ExtendedJob | undefined>();
+  const [job, setJob] = useState<ExtendedJob | undefined>(defaultJobs[0]);
   const [jobs, setJobs] = useState<ExtendedJob[]>(defaultJobs);
 
   const [query, setQuery] = useState(defaultQuery);
