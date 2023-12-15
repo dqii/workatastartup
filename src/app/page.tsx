@@ -3,22 +3,28 @@ import JobSearch from '@/components/JobSearch';
 import { getQuery, ExtendedJob } from '@/utils/database';
 import { getHighlighter } from 'shikiji';
 import _ from 'lodash';
-import { DEFAULT_LONG_INPUT } from '@/utils/constants';
+import { DEFAULT_LONG_INPUT, DEFAULT_SHORT_INPUT } from '@/utils/constants';
 
 async function searchJobs(
-  query: string,
+  longInput: string,
+  shortInput: string,
   country: string
 ): Promise<ExtendedJob[]> {
   'use server';
-  const jobs = await prismaClient.$queryRaw(getQuery(query, country));
+  const query = getQuery(longInput, shortInput, country);
+  const jobs = await prismaClient.$queryRaw(query);
   return (jobs as any[]).map((job) =>
     _.mapKeys(job, (v, k) => _.camelCase(k))
   ) as ExtendedJob[];
 }
 
-async function getSqlString(query: string, country: string) {
+async function getSqlString(
+  longInput: string,
+  shortInput: string,
+  country: string
+) {
   'use server';
-  return getQuery(query, country).sql;
+  return getQuery(longInput, shortInput, country).sql;
 }
 
 async function getHtml(code: string) {
@@ -43,8 +49,8 @@ async function getHtml(code: string) {
 }
 
 export default async function Home() {
-  const jobs = await searchJobs(DEFAULT_LONG_INPUT, '');
-  const query = await getSqlString(DEFAULT_LONG_INPUT, '');
+  const jobs = await searchJobs(DEFAULT_LONG_INPUT, DEFAULT_SHORT_INPUT, '');
+  const query = await getSqlString(DEFAULT_LONG_INPUT, DEFAULT_SHORT_INPUT, '');
   const html = await getHtml(query);
   return (
     <JobSearch

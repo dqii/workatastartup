@@ -1,4 +1,4 @@
 export const DEFAULT_LONG_INPUT =
-  'I have been a software engineer for 5 years. I like React Native and have experience with Expo. I enjoy front end work in general, and I want to work at a later stage company.';
+  'I have been building web and mobile apps for 5 years, but I want to transition to full stack or backend work. I see myself as a jack of all trades. My favorite new language is Rust but I have lots of experience with Typescript.';
 
-export const DEFAULT_SHORT_INPUT = '"React Native" Expo';
+export const DEFAULT_SHORT_INPUT = 'React -Native';

@@ -17,8 +17,16 @@ interface CountryButtonProps {
 
 interface JobSearchProps {
   getHtml: (code: string) => Promise<string>;
-  searchJobs: (query: string, country: string) => Promise<ExtendedJob[]>;
-  getQuery: (query: string, country: string) => Promise<string>;
+  searchJobs: (
+    longInput: string,
+    shortInput: string,
+    country: string
+  ) => Promise<ExtendedJob[]>;
+  getQuery: (
+    longInput: string,
+    shortInput: string,
+    country: string
+  ) => Promise<string>;
   defaultJobs: ExtendedJob[];
   defaultQuery: string;
   defaultHtml: string;
@@ -41,19 +49,19 @@ const JobSearch = ({
 
   const [query, setQuery] = useState(defaultQuery);
 
-  useEffect(() => {
-    getQuery(longInput, country).then(setQuery);
-  }, []);
-
   const debouncedLongInput = useDebounce(longInput, 1000);
   const debouncedShortInput = useDebounce(shortInput, 1000);
   useEffect(() => {
-    searchJobs(debouncedLongInput, country).then((jobs) => {
-      getQuery(debouncedLongInput, country).then(setQuery);
-      setJobs(jobs);
-      setJob(jobs[0]);
-    });
-  }, [debouncedLongInput, country]);
+    searchJobs(debouncedLongInput, debouncedShortInput, country).then(
+      (jobs) => {
+        getQuery(debouncedLongInput, debouncedShortInput, country).then(
+          setQuery
+        );
+        setJobs(jobs);
+        setJob(jobs[0]);
+      }
+    );
+  }, [debouncedLongInput, debouncedShortInput, country]);
 
   const CountryButton = ({ children }: CountryButtonProps) => (
     <button
@@ -71,7 +79,7 @@ const JobSearch = ({
 
   return (
     <div className='flex'>
-      <div className='w-[400px] px-5 flex flex-col gap-y-8 bg-slate-50 border-r-4 border-slate-100 min-h-screen'>
+      <div className='flex-none w-[400px] px-5 flex flex-col gap-y-8 bg-slate-50 border-r-4 border-slate-100 min-h-screen'>
         <div>
           <div className='h-24 pt-8'>
             <h1 className='text-3xl font-bold'>Find a Startup Job</h1>
@@ -109,9 +117,9 @@ const JobSearch = ({
           <p className='mb-3 text-lg'>Country Filter</p>
           <div className='flex gap-x-2'>
             <CountryButton>US</CountryButton>
-            <CountryButton>CA</CountryButton>
-            <CountryButton>UK</CountryButton>
             <CountryButton>IN</CountryButton>
+            <CountryButton>GB</CountryButton>
+            <CountryButton>CA</CountryButton>
           </div>
         </div>
 
@@ -146,7 +154,7 @@ const JobSearch = ({
             ))}
           </div>
         </div>
-        <div className='mt-10 border-t-2 border-slate-100 pt-10'>
+        <div className='mt-10 border-t-2 border-slate-100 pt-10 pb-10'>
           {job && <JobView job={job} />}
         </div>
       </div>
