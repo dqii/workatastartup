@@ -3,7 +3,7 @@ import JobSearch from '@/components/JobSearch';
 import { getQuery, ExtendedJob } from '@/utils/database';
 import { getHighlighter } from 'shikiji';
 import _ from 'lodash';
-import { DEFAULT_INPUT } from '@/utils/constants';
+import { DEFAULT_LONG_INPUT } from '@/utils/constants';
 
 async function searchJobs(
   query: string,
@@ -43,8 +43,8 @@ async function getHtml(code: string) {
 }
 
 export default async function Home() {
-  const jobs = await searchJobs(DEFAULT_INPUT, '');
-  const query = await getSqlString(DEFAULT_INPUT, '');
+  const jobs = await searchJobs(DEFAULT_LONG_INPUT, '');
+  const query = await getSqlString(DEFAULT_LONG_INPUT, '');
   const html = await getHtml(query);
   return (
     <JobSearch

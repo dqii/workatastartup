@@ -8,7 +8,8 @@ import { useDebounce } from '@uidotdev/usehooks';
 import classNames from 'classnames';
 import { ExtendedJob } from '@/utils/database';
 import Link from 'next/link';
-import { DEFAULT_INPUT } from '@/utils/constants';
+import { DEFAULT_LONG_INPUT, DEFAULT_SHORT_INPUT } from '@/utils/constants';
+import { HiSearch, HiX } from 'react-icons/hi';
 
 interface CountryButtonProps {
   children: string;
@@ -31,7 +32,8 @@ const JobSearch = ({
   searchJobs,
   getQuery,
 }: JobSearchProps) => {
-  const [input, setInput] = useState(DEFAULT_INPUT);
+  const [shortInput, setShortInput] = useState(DEFAULT_SHORT_INPUT);
+  const [longInput, setLongInput] = useState(DEFAULT_LONG_INPUT);
   const [country, setCountry] = useState('');
 
   const [job, setJob] = useState<ExtendedJob | undefined>(defaultJobs[0]);
@@ -40,17 +42,18 @@ const JobSearch = ({
   const [query, setQuery] = useState(defaultQuery);
 
   useEffect(() => {
-    getQuery(input, country).then(setQuery);
+    getQuery(longInput, country).then(setQuery);
   }, []);
 
-  const debouncedInput = useDebounce(input, 1000);
+  const debouncedLongInput = useDebounce(longInput, 1000);
+  const debouncedShortInput = useDebounce(shortInput, 1000);
   useEffect(() => {
-    searchJobs(debouncedInput, country).then((jobs) => {
-      getQuery(debouncedInput, country).then(setQuery);
+    searchJobs(debouncedLongInput, country).then((jobs) => {
+      getQuery(debouncedLongInput, country).then(setQuery);
       setJobs(jobs);
       setJob(jobs[0]);
     });
-  }, [debouncedInput, country]);
+  }, [debouncedLongInput, country]);
 
   const CountryButton = ({ children }: CountryButtonProps) => (
     <button
@@ -70,14 +73,34 @@ const JobSearch = ({
     <div className='flex'>
       <div className='w-[400px] px-5 flex flex-col gap-y-8 bg-slate-50 border-r-4 border-slate-100 min-h-screen'>
         <div>
-          <div className='h-20 pt-8'>
+          <div className='h-24 pt-8'>
             <h1 className='text-3xl font-bold'>Find a Startup Job</h1>
           </div>
 
-          <p className='mb-3 text-lg'>Tell us about your experience</p>
+          <p className='mb-3 text-lg'>Search for a job</p>
+          <div className='border border-slate-200 rounded bg-white flex items-center p-2'>
+            <input
+              value={shortInput}
+              onChange={(e) => setShortInput(e.target.value)}
+              placeholder='Job title, keywords, or company'
+              className='w-full text-sm focus:outline-none'
+            />
+            {shortInput ? (
+              <HiX
+                onClick={() => setShortInput('')}
+                className='text-slate-500'
+              />
+            ) : (
+              <HiSearch className='text-slate-500' />
+            )}
+          </div>
+        </div>
+
+        <div>
+          <p className='mb-3 text-lg'>Tell us about you</p>
           <textarea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
+            value={longInput}
+            onChange={(e) => setLongInput(e.target.value)}
             className='border border-slate-200 rounded text-slate-700 w-full h-28 p-2 text-sm'
           />
         </div>
@@ -101,7 +124,7 @@ const JobSearch = ({
 
       <div className='w-full px-12'>
         <div>
-          <div className='h-20 pt-8'>
+          <div className='h-24 pt-8'>
             <h1 className='text-3xl'>
               💥 Vector generation and search powered by{' '}
               <Link href='https://lantern.dev' className='text-slate-400'>
