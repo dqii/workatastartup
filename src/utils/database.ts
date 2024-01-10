@@ -1,54 +1,65 @@
-import { Job, Prisma } from '@prisma/client';
-
-export interface ExtendedJob extends Job {
-  score: number;
-}
-
 export const getQuery = (
   longInput: string,
   shortInput: string,
   country: string
 ) => {
-  return Prisma.sql`SELECT
-${
-  longInput
-    ? Prisma.sql`*,
-  cos_dist(
-  text_embedding('BAAI/bge-small-en', ${longInput}),
-  description_embedding_v2
-) AS score`
-    : Prisma.sql`  *`
-}
+  const indexes = { longInput: 0, shortInput: 0, country: 0 };
+
+  const params: string[] = [];
+  if (longInput) {
+    params.push(longInput);
+    indexes.longInput = params.length;
+  }
+  if (shortInput) {
+    params.push(shortInput);
+    indexes.shortInput = params.length;
+  }
+  if (country) {
+    params.push(country);
+    indexes.country = params.length;
+  }
+
+  // Select
+  const selectFields = ['*'];
+  if (longInput) {
+    selectFields.push(
+      `cos_dist(\n\t\ttext_embedding('BAAI/bge-small-en', $${indexes.longInput}),\n\t\tdescription_embedding_v2\n\t) AS score`
+    );
+  }
+
+  // Where
+  const whereFields: string[] = [];
+  if (country) {
+    whereFields.push(`country = $${indexes.country}`);
+  }
+  if (shortInput) {
+    whereFields.push(
+      `websearch_to_tsquery('english', $${indexes.shortInput}) @@ description_tsvector`
+    );
+  }
+  const whereQuery = whereFields.length
+    ? `WHERE\n\t${whereFields.join('\n\tAND ')}\n`
+    : '';
+
+  // Order by
+  let orderBy: string;
+  if (longInput) {
+    orderBy = `text_embedding('BAAI/bge-small-en', $${indexes.longInput}) <=> description_embedding_v2`;
+  } else if (shortInput) {
+    orderBy = `ts_rank_cd(to_tsvector('english', description), websearch_to_tsquery('english', $${indexes.shortInput})) DESC`;
+  } else {
+    orderBy = `date DESC`;
+  }
+
+  const selectQuery = selectFields.join(',\n\t');
+
+  const query = `SELECT
+\t${selectQuery}
 FROM
-  jobs
-${
-  shortInput && country
-    ? Prisma.sql`WHERE
-  country = ${country}
-  AND websearch_to_tsquery('english', ${shortInput})
-    @@ to_tsvector('english', description)`
-    : country
-    ? Prisma.sql`WHERE
-  country = ${country}`
-    : shortInput
-    ? Prisma.sql`WHERE
-  websearch_to_tsquery('english', ${shortInput})
-    @@ to_tsvector('english', description)`
-    : Prisma.empty
-}
-${
-  longInput
-    ? Prisma.sql`ORDER BY
-  text_embedding('BAAI/bge-small-en', ${longInput})
-    <=> description_embedding_v2`
-    : shortInput
-    ? Prisma.sql`ORDER BY
-  ts_rank_cd(
-    to_tsvector('english', description),
-    websearch_to_tsquery('english', ${shortInput})
-  ) DESC`
-    : Prisma.sql`ORDER BY
-  date DESC`
-}
+\tjobs
+${whereQuery}ORDER BY
+\t${orderBy}
 LIMIT 3`;
+
+  return { query, params };
 };

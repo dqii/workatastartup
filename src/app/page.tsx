@@ -1,21 +1,23 @@
-import prismaClient from '@/clients/prisma';
+import { Pool } from 'pg';
 import JobSearch from '@/components/JobSearch';
-import { getQuery, ExtendedJob } from '@/utils/database';
+import { getQuery } from '@/utils/database';
 import { getHighlighter } from 'shikiji';
 import _ from 'lodash';
 import { DEFAULT_LONG_INPUT, DEFAULT_SHORT_INPUT } from '@/utils/constants';
+
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
 async function searchJobs(
   longInput: string,
   shortInput: string,
   country: string
-): Promise<ExtendedJob[]> {
+): Promise<any[]> {
   'use server';
   const query = getQuery(longInput, shortInput, country);
-  const jobs = await prismaClient.$queryRaw(query);
-  return (jobs as any[]).map((job) =>
+  const jobs = await pool.query(query.query, query.params);
+  return (jobs.rows as any[]).map((job) =>
     _.mapKeys(job, (v, k) => _.camelCase(k))
-  ) as ExtendedJob[];
+  ) as any[];
 }
 
 async function getSqlString(
@@ -24,7 +26,7 @@ async function getSqlString(
   country: string
 ) {
   'use server';
-  return getQuery(longInput, shortInput, country).sql;
+  return getQuery(longInput, shortInput, country).query;
 }
 
 async function getHtml(code: string) {

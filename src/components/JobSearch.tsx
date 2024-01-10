@@ -6,7 +6,6 @@ import JobPreview from './JobPreview';
 import JobView from './JobView';
 import { useDebounce } from '@uidotdev/usehooks';
 import classNames from 'classnames';
-import { ExtendedJob } from '@/utils/database';
 import Link from 'next/link';
 import { DEFAULT_LONG_INPUT, DEFAULT_SHORT_INPUT } from '@/utils/constants';
 import { HiSearch, HiX } from 'react-icons/hi';
@@ -21,13 +20,13 @@ interface JobSearchProps {
     longInput: string,
     shortInput: string,
     country: string
-  ) => Promise<ExtendedJob[]>;
+  ) => Promise<any[]>;
   getQuery: (
     longInput: string,
     shortInput: string,
     country: string
   ) => Promise<string>;
-  defaultJobs: ExtendedJob[];
+  defaultJobs: any[];
   defaultQuery: string;
   defaultHtml: string;
 }
@@ -44,8 +43,8 @@ const JobSearch = ({
   const [longInput, setLongInput] = useState(DEFAULT_LONG_INPUT);
   const [country, setCountry] = useState('');
 
-  const [job, setJob] = useState<ExtendedJob | undefined>(defaultJobs[0]);
-  const [jobs, setJobs] = useState<ExtendedJob[]>(defaultJobs);
+  const [job, setJob] = useState<any | undefined>(defaultJobs[0]);
+  const [jobs, setJobs] = useState<any[]>(defaultJobs);
 
   const [query, setQuery] = useState(defaultQuery);
 
@@ -79,13 +78,13 @@ const JobSearch = ({
 
   return (
     <div className='flex'>
-      <div className='flex-none w-[400px] px-5 flex flex-col gap-y-8 bg-slate-50 border-r-4 border-slate-100 min-h-screen'>
+      <div className='flex-none w-[650px] px-5 flex flex-col gap-y-8 bg-slate-50 border-r-4 border-slate-100 min-h-screen'>
         <div>
           <div className='h-24 pt-8'>
             <h1 className='text-3xl font-bold'>Find a Startup Job</h1>
           </div>
 
-          <p className='mb-3 text-lg'>Search for a job</p>
+          <p className='mb-3 text-lg'>Search with keywords</p>
           <div className='border border-slate-200 rounded bg-white flex items-center p-2'>
             <input
               value={shortInput}

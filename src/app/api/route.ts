@@ -1,27 +1,39 @@
-import { PrismaClient } from "@prisma/client";
-import { parseString } from "xml2js";
-import fs from "fs";
+import { Kysely, PostgresDialect } from 'kysely';
+import { Pool } from 'pg';
+import { parseString } from 'xml2js';
+import fs from 'fs';
 
-export const dynamic = "force-dynamic"; // defaults to force-static
+export const dynamic = 'force-dynamic'; // defaults to force-static
 
 export async function GET() {
-  if (process.env.NODE_ENV === "production") {
-    return new Response("Hi");
+  if (process.env.NODE_ENV === 'production') {
+    return new Response('Hi');
   }
 
-  // Initialize Prisma Client
-  const prisma = new PrismaClient();
+  const dialect = new PostgresDialect({
+    pool: new Pool({
+      database: 'test',
+      host: 'localhost',
+      user: 'admin',
+      port: 5434,
+      max: 10,
+    }),
+  });
+
+  const db = new Kysely({
+    dialect,
+  });
 
   // Read XML file
   const xmlData = fs.readFileSync(
-    "/Users/diqi/lantern/workatastartup/job_feed.xml",
-    "utf8"
+    '/Users/diqi/lantern/workatastartup/job_feed.xml',
+    'utf8'
   );
 
   // Parse XML data
   parseString(xmlData, (err, result) => {
     if (err) {
-      console.error("Error parsing XML:", err);
+      console.error('Error parsing XML:', err);
       process.exit(1);
     }
 
@@ -48,20 +60,20 @@ export async function GET() {
         ) || null,
       salaryHigh:
         parseInt(
-          job.salaries?.[0]?.salary?.[0]?.highEnd?.[0]?.amount?.[0] || "0"
+          job.salaries?.[0]?.salary?.[0]?.highEnd?.[0]?.amount?.[0] || '0'
         ) || null,
       salaryLowCurrency:
         job.salaries?.[0]?.salary?.[0]?.lowEnd?.[0]?.currencyCode?.[0],
       salaryHighCurrency:
         job.salaries?.[0]?.salary?.[0]?.highEnd?.[0]?.currencyCode?.[0],
     }));
-    prisma.job.createMany({ data }).catch((error) => {
-      console.error("Error inserting data:", error);
-    });
-
-    // Close Prisma Client connection
-    prisma.$disconnect();
+    db.insertInto('jobs' as never)
+      .values(data)
+      .execute()
+      .catch((error) => {
+        console.error('Error inserting data:', error);
+      });
   });
 
-  return new Response("Hi");
+  return new Response('Hi');
 }
