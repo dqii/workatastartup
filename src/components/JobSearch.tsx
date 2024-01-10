@@ -125,7 +125,19 @@ const JobSearch = ({
         <div>
           <p className='mb-3 text-lg'>Generated SQL Query</p>
           <CodeBlock defaultHtml={defaultHtml} code={query} getHtml={getHtml} />
-          <p className='mt-2 text-xs'>Note: Replace ? with the inputs</p>
+          <p className='mt-4 text-sm'>
+            Note: <i>description_embedding_v3</i> was generated with
+            Lantern.dev's{' '}
+            <Link
+              href='https://lantern.dev/docs/develop/columns'
+              className='font-medium'
+            >
+              embedding generation feature
+            </Link>
+          </p>
+          <p className='mt-2 text-sm'>
+            Note: <i>description_tsvector</i> was generated with to_tsvector
+          </p>
         </div>
       </div>
 
