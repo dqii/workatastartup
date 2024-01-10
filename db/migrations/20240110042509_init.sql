@@ -17,7 +17,8 @@ CREATE TABLE IF NOT EXISTS jobs (
     salary_low_currency  TEXT,
     salary_high_currency TEXT,
     description_embedding REAL[],
-    description_embedding_v2 REAL[]
+    description_embedding_v2 REAL[],
+    description_embedding_v3 REAL[]
 );
 
 -- migrate:down

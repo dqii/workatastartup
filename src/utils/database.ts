@@ -23,7 +23,7 @@ export const getQuery = (
   const selectFields = ['*'];
   if (longInput) {
     selectFields.push(
-      `cos_dist(\n\t\ttext_embedding('BAAI/bge-small-en', $${indexes.longInput}),\n\t\tdescription_embedding_v2\n\t) AS score`
+      `cos_dist(\n\t\ttext_embedding('BAAI/bge-base-en', $${indexes.longInput}),\n\t\tdescription_embedding_v3\n\t) AS score`
     );
   }
 
@@ -44,7 +44,7 @@ export const getQuery = (
   // Order by
   let orderBy: string;
   if (longInput) {
-    orderBy = `text_embedding('BAAI/bge-small-en', $${indexes.longInput}) <=> description_embedding_v2`;
+    orderBy = `text_embedding('BAAI/bge-base-en', $${indexes.longInput}) <=> description_embedding_v3`;
   } else if (shortInput) {
     orderBy = `ts_rank_cd(to_tsvector('english', description), websearch_to_tsquery('english', $${indexes.shortInput})) DESC`;
   } else {
