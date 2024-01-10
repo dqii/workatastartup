@@ -1,7 +1,6 @@
-import { ExtendedJob } from '@/utils/database';
 import classNames from 'classnames';
 
-export function formatLocation(job: ExtendedJob) {
+export function formatLocation(job: any) {
   const { city, state, country } = job;
   let location = '';
 
@@ -19,7 +18,7 @@ export function formatLocation(job: ExtendedJob) {
   return location;
 }
 
-export function formatLocationWithWorkplace(job: ExtendedJob) {
+export function formatLocationWithWorkplace(job: any) {
   const { workplace } = job;
 
   let location = formatLocation(job);
@@ -33,9 +32,9 @@ export function formatLocationWithWorkplace(job: ExtendedJob) {
 
 interface JobPreviewProps {
   idx: number;
-  job: ExtendedJob;
-  activeJob: ExtendedJob | undefined;
-  setActiveJob: (job: ExtendedJob) => void;
+  job: any;
+  activeJob: any | undefined;
+  setActiveJob: (job: any) => void;
 }
 
 const JobPreview = ({ idx, job, activeJob, setActiveJob }: JobPreviewProps) => {
