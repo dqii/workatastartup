@@ -46,7 +46,7 @@ export const getQuery = (
   if (longInput) {
     orderBy = `text_embedding('BAAI/bge-base-en', $${indexes.longInput}) <=> description_embedding_v3`;
   } else if (shortInput) {
-    orderBy = `ts_rank_cd(to_tsvector('english', description), websearch_to_tsquery('english', $${indexes.shortInput})) DESC`;
+    orderBy = `ts_rank_cd(description_tsvector, websearch_to_tsquery('english', $${indexes.shortInput})) DESC`;
   } else {
     orderBy = `date DESC`;
   }
