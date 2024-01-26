@@ -1,9 +1,13 @@
+import { EMBEDDING_MODEL_TO_COLUMN } from './constants';
+
 export const getQuery = (
+  embeddingModel: string,
   longInput: string,
   shortInput: string,
   country: string
 ) => {
   const indexes = { longInput: 0, shortInput: 0, country: 0 };
+  const embeddingColumn = EMBEDDING_MODEL_TO_COLUMN[embeddingModel];
 
   const params: string[] = [];
   if (longInput) {
@@ -23,7 +27,7 @@ export const getQuery = (
   const selectFields = ['*'];
   if (longInput) {
     selectFields.push(
-      `cos_dist(\n\t\ttext_embedding('BAAI/bge-base-en', $${indexes.longInput}),\n\t\tdescription_embedding_v3\n\t) AS score`
+      `cos_dist(\n\t\ttext_embedding('${embeddingModel}', $${indexes.longInput}),\n\t\t${embeddingColumn}\n\t) AS score`
     );
   }
 
@@ -44,7 +48,7 @@ export const getQuery = (
   // Order by
   let orderBy: string;
   if (longInput) {
-    orderBy = `text_embedding('BAAI/bge-base-en', $${indexes.longInput}) <=> description_embedding_v3`;
+    orderBy = `text_embedding('${embeddingModel}', $${indexes.longInput}) <=> ${embeddingColumn}`;
   } else if (shortInput) {
     orderBy = `ts_rank_cd(description_tsvector, websearch_to_tsquery('english', $${indexes.shortInput})) DESC`;
   } else {

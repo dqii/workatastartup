@@ -3,17 +3,22 @@ import JobSearch from '@/components/JobSearch';
 import { getQuery } from '@/utils/database';
 import { getHighlighter } from 'shikiji';
 import _ from 'lodash';
-import { DEFAULT_LONG_INPUT, DEFAULT_SHORT_INPUT } from '@/utils/constants';
+import {
+  DEFAULT_EMBEDDING_MODEL,
+  DEFAULT_LONG_INPUT,
+  DEFAULT_SHORT_INPUT,
+} from '@/utils/constants';
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
 async function searchJobs(
+  embeddingModel: string,
   longInput: string,
   shortInput: string,
   country: string
 ): Promise<any[]> {
   'use server';
-  const query = getQuery(longInput, shortInput, country);
+  const query = getQuery(embeddingModel, longInput, shortInput, country);
   const jobs = await pool.query(query.query, query.params);
   return (jobs.rows as any[]).map((job) =>
     _.mapKeys(job, (v, k) => _.camelCase(k))
@@ -21,12 +26,13 @@ async function searchJobs(
 }
 
 async function getSqlString(
+  embeddingModel: string,
   longInput: string,
   shortInput: string,
   country: string
 ) {
   'use server';
-  return getQuery(longInput, shortInput, country).query;
+  return getQuery(embeddingModel, longInput, shortInput, country).query;
 }
 
 async function getHtml(code: string) {
@@ -51,8 +57,18 @@ async function getHtml(code: string) {
 }
 
 export default async function Home() {
-  const jobs = await searchJobs(DEFAULT_LONG_INPUT, DEFAULT_SHORT_INPUT, '');
-  const query = await getSqlString(DEFAULT_LONG_INPUT, DEFAULT_SHORT_INPUT, '');
+  const jobs = await searchJobs(
+    DEFAULT_EMBEDDING_MODEL,
+    DEFAULT_LONG_INPUT,
+    DEFAULT_SHORT_INPUT,
+    ''
+  );
+  const query = await getSqlString(
+    DEFAULT_EMBEDDING_MODEL,
+    DEFAULT_LONG_INPUT,
+    DEFAULT_SHORT_INPUT,
+    ''
+  );
   const html = await getHtml(query);
   return (
     <JobSearch
