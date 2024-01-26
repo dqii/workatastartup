@@ -76,17 +76,23 @@ const JobSearch = ({
     });
   }, [debouncedLongInput, debouncedShortInput, country, embeddingModel]);
 
-  const CountryButton = ({ children }: ButtonProps) => (
+  const CountryButton = ({
+    label,
+    emoji,
+  }: {
+    label: string;
+    emoji: string;
+  }) => (
     <button
       className={classNames(
         'py-1 px-4 rounded-full text-sm',
-        country === children
+        country === label
           ? 'bg-slate-400 text-white'
           : 'border border-slate-200 bg-white hover:bg-slate-100'
       )}
-      onClick={() => setCountry(country === children ? '' : children)}
+      onClick={() => setCountry(country === label ? '' : label)}
     >
-      {children}
+      {emoji} {label}
     </button>
   );
 
@@ -112,7 +118,16 @@ const JobSearch = ({
             <h1 className='text-3xl font-bold'>Find a Startup Job</h1>
           </div>
 
-          <p className='mb-3 text-lg'>Search with keywords</p>
+          <p className='mb-3 text-lg'>Tell us about you 😊</p>
+          <textarea
+            value={longInput}
+            onChange={(e) => setLongInput(e.target.value)}
+            className='border border-slate-200 rounded text-slate-700 w-full h-28 p-2 text-sm'
+          />
+        </div>
+
+        <div>
+          <p className='mb-3 text-lg'>Filter jobs with keywords 🔎</p>
           <div className='border border-slate-200 rounded bg-white flex items-center p-2'>
             <input
               value={shortInput}
@@ -132,21 +147,12 @@ const JobSearch = ({
         </div>
 
         <div>
-          <p className='mb-3 text-lg'>Tell us about you</p>
-          <textarea
-            value={longInput}
-            onChange={(e) => setLongInput(e.target.value)}
-            className='border border-slate-200 rounded text-slate-700 w-full h-28 p-2 text-sm'
-          />
-        </div>
-
-        <div>
           <p className='mb-3 text-lg'>Country Filter</p>
           <div className='flex gap-x-2'>
-            <CountryButton>US</CountryButton>
-            <CountryButton>IN</CountryButton>
-            <CountryButton>GB</CountryButton>
-            <CountryButton>CA</CountryButton>
+            <CountryButton label='US' emoji='🇺🇸' />
+            <CountryButton label='IN' emoji='🇮🇳' />
+            <CountryButton label='GB' emoji='🇬🇧' />
+            <CountryButton label='CA' emoji='🇨🇦' />
           </div>
         </div>
 
