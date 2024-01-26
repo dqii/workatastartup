@@ -7,6 +7,7 @@ export const EMBEDDING_MODEL_TO_COLUMN: { [k: string]: string } = {
   // 'BAAI/bge-large-en': 'description_embedding',
   'BAAI/bge-small-en': 'description_embedding_v2',
   'BAAI/bge-base-en': 'description_embedding_v3',
+  'jinaai/jina-embeddings-v2-small-en': 'description_embedding',
   'jinaai/jina-embeddings-v2-base-en': 'description_embedding_v4',
 };
 
